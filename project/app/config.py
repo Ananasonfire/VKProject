@@ -17,6 +17,10 @@ class Settings(BaseSettings):
 
     @field_validator('database_url')
     def ensure_psycopg2(cls, v):
+        # Если это in-memory SQLite для тестов — пропускаем строгую проверку
+        if v.startswith('sqlite'):
+            return v
+        # Для остальных случаев ожидаем префикс postgresql+psycopg
         assert 'postgresql+' in v, 'DATABASE_URL must use psycopg driver'
         return v
 

@@ -1,5 +1,6 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from typing import List
+from datetime import datetime
 
 class SegmentBase(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
@@ -12,9 +13,10 @@ class SegmentUpdate(BaseModel):
 
 class SegmentOut(SegmentBase):
     id: int
-    created_at: str
-    class Config:
-        from_attributes = True
+    created_at: datetime
+
+    # Pydantic v2 config for ORM support
+    model_config = ConfigDict(from_attributes=True)
 
 class AssignUsers(BaseModel):
     user_ids: List[int] = Field(..., min_items=1)
@@ -25,5 +27,6 @@ class AssignPercent(BaseModel):
 class UserOut(BaseModel):
     id: int
     segments: List[SegmentOut] = []
-    class Config:
-        from_attributes = True
+
+    # Pydantic v2 config for ORM support
+    model_config = ConfigDict(from_attributes=True)
