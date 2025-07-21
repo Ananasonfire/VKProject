@@ -1,8 +1,13 @@
-from pydantic import BaseSettings, field_validator
+from pydantic import  field_validator
+from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     database_url: str
-
+    postgres_db: str
+    postgres_user: str
+    postgres_password: str
+    postgres_host: str
+    postgres_port: int
     class Config:
         env_file = '.env'
         model_config = {
