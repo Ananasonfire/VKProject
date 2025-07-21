@@ -1,14 +1,22 @@
+# Stage 1: install dependencies
 FROM python:3.11-slim AS builder
 WORKDIR /app
-COPY requirements.txt .
+
+# Сначала копируем только requirements, чтобы кешировать установку зависимостей
+COPY requirements.txt ./
 RUN pip install --prefix=/install --no-cache-dir -r requirements.txt
 
-# Stage 2: final image
+# Stage 2: application image
 FROM python:3.11-slim
 WORKDIR /app
+
+# Копируем уже установленный pip-пакеты из builder
 COPY --from=builder /install /usr/local
-COPY .env ./
-COPY alembic/ ./alembic/
-COPY app/ ./app/
-COPY Dockerfile .
+
+# Копируем код приложения и .env
+COPY .env .env
+COPY app/ app/
+COPY requirements.txt ./
+
+# Запускаем приложение
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
