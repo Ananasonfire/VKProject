@@ -16,7 +16,7 @@ COPY --from=builder /install /usr/local
 # Копируем код приложения и .env
 COPY .env .env
 COPY app/ app/
-COPY requirements.txt ./
+
 
 # Запускаем приложение
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
