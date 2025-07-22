@@ -1,24 +1,25 @@
 from pydantic import field_validator
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
+    # единственная вещь, которой реально нужна в приложении
     database_url: str
-    # остальное без изменений...
 
-    class Config:
-        env_file = '.env'
-        model_config = {
-            'populate_by_name': True,
-            'env_prefix': ''
-        }
+    model_config = SettingsConfigDict(
+        env_file='.env',
+        env_prefix='',        # без префиксов
+        extra='ignore',       # игнорировать все переменные, не описанные в модели
+    )
 
     @field_validator('database_url')
-    def validate_scheme(cls, v):
-        # для тестов в памяти разрешаем sqlite://
+    def validate_scheme(cls, v: str) -> str:
+        # для sqlite-тестов — пропускаем
         if v.startswith('sqlite'):
             return v
-        # для всех остальных — должно начинаться с postgresql://
-        assert v.startswith('postgresql://'), 'DATABASE_URL must start with postgresql://'
+        # для postgresql с psycopg2‑binary — обычный префикс
+        assert v.startswith('postgresql://'), \
+            "DATABASE_URL must start with postgresql://"
         return v
 
 settings = Settings()
+
