@@ -6,7 +6,7 @@ from .models import Base
 app = FastAPI(
     title="VK User Segments Service",
     version="1.0",
-    description="Сервис для управления сегментами и их привязкой к пользователям"
+    description="Сервис сегментирования пользователей"
 )
 
 # Health‑check endpoint
