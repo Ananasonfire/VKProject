@@ -3,10 +3,19 @@ from .api import segments, users
 from .db import engine
 from .models import Base
 
-app = FastAPI(title='VK User Segments Service', version='1.0')
+app = FastAPI(
+    title="VK User Segments Service",
+    version="1.0",
+    description="Сервис для управления сегментами и их привязкой к пользователям"
+)
+
+# Health‑check endpoint
+@app.get("/", tags=["health"])
+async def health_check():
+    return {"status": "ok"}
 
 # Создаем таблицы при старте приложения
-@app.on_event('startup')
+@app.on_event("startup")
 async def on_startup():
     Base.metadata.create_all(bind=engine)
 
