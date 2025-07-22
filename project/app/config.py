@@ -1,13 +1,10 @@
-from pydantic import  field_validator
+from pydantic import field_validator
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     database_url: str
-    postgres_db: str
-    postgres_user: str
-    postgres_password: str
-    postgres_host: str
-    postgres_port: int
+    # остальное без изменений...
+
     class Config:
         env_file = '.env'
         model_config = {
@@ -16,12 +13,12 @@ class Settings(BaseSettings):
         }
 
     @field_validator('database_url')
-    def ensure_psycopg2(cls, v):
-        # Если это in-memory SQLite для тестов — пропускаем строгую проверку
+    def validate_scheme(cls, v):
+        # для тестов в памяти разрешаем sqlite://
         if v.startswith('sqlite'):
             return v
-        # Для остальных случаев ожидаем префикс postgresql+psycopg
-        assert 'postgresql+' in v, 'DATABASE_URL must use psycopg driver'
+        # для всех остальных — должно начинаться с postgresql://
+        assert v.startswith('postgresql://'), 'DATABASE_URL must start with postgresql://'
         return v
 
 settings = Settings()

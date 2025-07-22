@@ -1,0 +1,4 @@
+[
+  "project/test/test_segments.py::test_crud_flow",
+  "project/test/test_users.py::test_user_segment_workflow"
+]
